@@ -145,7 +145,10 @@ for i in df.index:
     
     if marc_tag != prev_marc_tag: 
         ## we have a new tag so we append the field to record, and reset variables
-        record.append(field)
+        try:
+            record.append(field)
+        except Exception as e:
+            pass ## first iteration will not have a valid field
         prev_marc_tag = marc_tag
         subfields = []
     ## case for leader   
