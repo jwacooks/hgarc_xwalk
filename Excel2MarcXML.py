@@ -124,7 +124,7 @@ for i in df.index:
             collection.append(sort_marc_tags(record))
         ## write out the records in collections of 100 records
         if len(collection) == 100:
-            f.write(ET.tostring(collection))
+            f.write(ET.tostring(collection,encoding="unicode"))
             f.close()
             file_num += 1
             f = open('hgarc-updated-records'+str(file_num)+'.xml','w')
