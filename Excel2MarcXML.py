@@ -136,14 +136,13 @@ for i in df.index:
     try:
         marc_tag = str(int(df.loc[i,'marc_tag']))
     except Exception as e:
-        ## the leader does not have a marc_tag, so we account for that
         marc_tag = ''
     ## need to prefix some marc tags with leading zeros
     pad = '000'
     marc_tag = pad[len(marc_tag):] + marc_tag
     ## consider adding the indicators to the marc_tag
     
-    if marc_tag != prev_marc_tag: 
+    if marc_tag != prev_marc_tag: ## we have a new tag
         ## we have a new tag so we append the field to record, and reset variables
         try:
             record.append(field)
@@ -151,17 +150,16 @@ for i in df.index:
             pass ## first iteration will not have a valid field
         prev_marc_tag = marc_tag
         subfields = []
-    ## case for leader   
     if df.loc[i,'field_type'] == 'leader':
         marc_tag = 'leader'
         field = ET.Element('leader')
         field.text = df.loc[i,'field_value']
-    ## case for controlfield
+        #print('\t'+marc_tag)
     elif df.loc[i,'field_type'] == 'controlfield':
         field = ET.Element('controlfield')
         field.attrib['tag'] = marc_tag
         field.text = df.loc[i,'field_value']
-    ## case for datafields
+        #print('\t'+marc_tag)
     else: ## here we deal with datafields 
         ## for most, we can add multiple subfields to the same marc tag
         ## for a few, we need separate marc tags because they contain
@@ -198,7 +196,6 @@ for i in df.index:
         field = make_field(d,subfields)
         prev_marc_tag = marc_tag
 collection.append(sort_marc_tags(record))      
-
-f.write(ET.tostring(collection))
+f.write(ET.tostring(collection,encoding="unicode"))
 f.close()
 
