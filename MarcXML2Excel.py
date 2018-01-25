@@ -25,7 +25,8 @@ import glob
 ## file_list builds a list on the pattern 'hgarc_1*.xml'. 
 file_list = glob.glob('hgarc_1*.xml')
 rec_count = 0
-col_num = 0
+col_num = 0 
+desired_record_number = 25 ## number of records to be written per spreadsheet
 columns = [u'CollectionNum', u'oclcnum', u'field_type', 
            u'marc_tag', u'ind1', u'ind2',u'field_value', 
            u'sub_code',u'sub_value']
@@ -41,7 +42,7 @@ for f in file_list[0:]:
     for record in records[0:]:
         rec_count += 1
         print(rec_count)
-        if rec_count == 25:
+        if rec_count == desired_record_number:
             ## we write change the column order of the dataframe 
             rec_count = 0
             print('writing to excel')
