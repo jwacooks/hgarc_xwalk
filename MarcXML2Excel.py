@@ -30,14 +30,29 @@ columns = [u'CollectionNum', u'oclcnum', u'field_type',
            u'marc_tag', u'ind1', u'ind2',u'field_value', 
            u'sub_code',u'sub_value']
 df = pd.DataFrame()
+out_file_num = 0
 ## iterate through each file
 for f in file_list[0:]:
     cnum = 0
     collection = ET.parse(f).getroot()
-    rec_count += len(list(collection))
+    #rec_count += len(list(collection))
     records = list(collection)
 
     for record in records[0:]:
+        rec_count += 1
+        print(rec_count)
+        if rec_count == 25:
+            ## we write change the column order of the dataframe 
+            rec_count = 0
+            print('writing to excel')
+            df = df[[u'CollectionNum', u'oclcnum', u'field_type', 
+                           u'marc_tag', u'ind1', u'ind2',u'field_value', 
+                           u'sub_code',u'sub_value']]
+            ## and write it to an excel spreadsheet
+            df.to_excel('hgarc_oclc_recs_'+str(out_file_num)+'.xlsx')
+            df = pd.DataFrame()
+            out_file_num += 1
+            
         cnum += 1 
         ## we look for the 099 tag where we have stored the collection number
         _099 = record.find('*/[@tag="099"]/*/[@code="a"]')
@@ -111,5 +126,5 @@ df = df[[u'CollectionNum', u'oclcnum', u'field_type',
                u'marc_tag', u'ind1', u'ind2',u'field_value', 
                u'sub_code',u'sub_value']]
 ## and write it to an excel spreadsheet
-df.to_excel('hgarc_oclc_recs.xlsx')
+df.to_excel('hgarc_oclc_recs_'+str(out_file_num)+'.xlsx')
 
